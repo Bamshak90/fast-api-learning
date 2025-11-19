@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Path
+from pydantic import BaseModel
 
 
 app = FastAPI()
@@ -7,36 +8,78 @@ students = {
   1: {
     "name": "mark",
     "age": 2
+  },
+  2: {
+    "name": "grace",
+    "age": 2
+  },
+  3: {
+    "name": "steve",
+    "age": 2
+  },
+  4: {
+    "name": "jason",
+    "age": 2
+  },
+  5: {
+    "name": "dorcas",
+    "age": 2
   }
 }
+
+class Student(BaseModel):
+  name: str
+  age: int
+  year: str
 @app.get("/")
 
-def home():
+def root():
   return {"Welcome": "user"}
 
+# by using path parameter
 
-@app.get("/get-student{student_id}{student_name}")
+@app.get("/get-student{student_id}")
 
-def student_record(student_id: int = Path(description="Enter student id to view student record", gt = 0, le = 10 )):
+def student_record(student_id: int = Path(description="Enter student id to view student record", gt = 0, le = 100 )):
   if student_id in students:
     return students[student_id]
+  else:
+    return {"Student_id": "Does not exist"}
   
 
-def student_greet(student_name: str = Path(description="using student name to greet")):
-  if student_name in students:
-    return students[student_id]["name"]
+"""
+in case you want to use for loop to loop through the dictionary this is another way to go about it
 
 
+def student_record(student_id: int = Path(description="Enter student id to view student record", gt = 0, le = 20 )):
+  for student, value in students.items():
+    if student == student_id:
+      return student, value
+  return {"student_id": "Does not exist"}
 
+"""
 
+#using query parameter
 
 
+@app.get("/get-by-name")
+def get_student(name: str):
+  for student_id in students:
+    if students[student_id]["name"] == name:
+      return students[student_id]
+  return {"Data": "Not found"}
 
 
 
 
 
+@app.post("/create-post{student_id}")
 
+def create_post(student_id: int, student: Student):
+  if student_id in students:
+    return {"Error": "Data already exist"}
+  students[student_id] = student
+  return students[student_id]
 
 
 
@@ -118,24 +161,9 @@ def student_greet(student_name: str = Path(description="using student name to gr
 
 
 
-# from fastapi import FastAPI, Path
 
 
-# app =  FastAPI()
 
 
-# students = {
-#     1: {
-#         "name": "Mark",
-#         "age": 20,
-#         "year": "Final year",
-#         "gender": "Male"
-#     }
-# }
-
-
-# @app.get("/get-student/{student_id}")
-# def get_students(student_id: int = Path(description = "The id of the student you want to view")):
-#    if students["id"] == student_id:
-#     return students[student_id]
-#    return {"Welcome": "But student id does not exist in the database"}
+
+
