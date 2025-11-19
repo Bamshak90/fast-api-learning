@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Path
 from pydantic import BaseModel
+from typing import Optional
 
 
 app = FastAPI()
@@ -17,6 +18,12 @@ class Student(BaseModel):
   name: str
   age: int
   year: str
+
+class Update(BaseModel):
+  name: Optional[str]
+  age: Optional[int]
+  year: Optional[str]
+
 
 @app.get("/")
 def root():
@@ -37,3 +44,12 @@ def create_post(student_id: int, student: Student):
     return {"Error": "ID exist"}
   students[student_id] = student
   return students[student_id]
+
+
+@app.put("/update{student_id}")
+
+def update_post(student_id: int, student: Update):
+  if student_id in students:
+    students[student_id] = student
+    return students[student_id]
+  return {"Error": "student ID does not exist"}
