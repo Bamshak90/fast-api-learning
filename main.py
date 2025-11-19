@@ -1,94 +1,72 @@
 from fastapi import FastAPI, Path
+from typing import Optional
+from pydantic import BaseModel
+
 
 
 app = FastAPI()
 
-students = {
-  1: { 
-    "name": "Mark",
-    "age": 25,
-    "class": "final year"
-  },
-  2: {
-     "name":"Nanmen",
-     "age": 20,
-     "class": "300 level"
-  }
-}
+students = {}
 
-@app.get("/")
-def index():
-  return {"message": "Welcome to Task Manager API!"} 
+class Student(BaseModel):
+  name: str
+  age: int
+  year: str
+  department: str
+  CGP: float
+
+class Update(BaseModel):
+  name: Optional[str] = None
+  age: Optional[int] = None
+  year: Optional[str] = None
+  department: Optional[str] = None
+  CGP: Optional[float] = None
 
 
-@app.get("/get-student/{student_id}")
-def get_student(student_id: int = Path(description= "The ID of the student you want to view",gt = 0, le = 10)):
+@app.get("/get-student{student_id}")
 
+def get_student(student_id: int = Path(description="This is to get the student record using the student id")):
+  if student_id in students:
     return students[student_id]
-     
-    return {"The student data does not exist"}
-  # raise HTTPException(status_code=404, detail="Student not found")
+  return {"message": "Error, student id does not exist"}
 
 
+@app.post("/create-student{student_id}")
+
+def create_student(student_id: int, student: Student):
+  if student_id in students:
+    return {"message": "student id already exist"}
+  students[student_id] = student
+  return students[student_id]
+
+@app.put("/update-student{student_id}")
+
+def update_student(student_id: int, student: Update):
+  if student_id  in students:
+
+    if student.name != None:
+      students[student_id].name == student.name
+
+    if student.age != None:
+      students[student_id].age == student.age
+
+    if student.year != None:
+      students[student_id].year == student.year
+
+    if student.department != None:
+      students[student_id].department == student.department
+
+    if student.CGP != None:
+      students[student_id].CPG == student.CGP
+    return students[student_id]
+  
+  return {"message": "id does not exist"}
 
 
-# @app.get("/get")
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# @app.post("/")
-# def message_update():
-#   return {"animal": "blue-wahale"}
-
-
-# @app.put("/")
-# def updated():
-#   return {"mad": "This is crazy and fuck"}
-
-
-# @app.delete("/")
-# def remove_info():
-#   return {"name": "I have just seen something wonderful"}
+@app.delete("/delete-student{student_id}")
+def delete_student(student_id: int):
+  if student_id in students:
+    del students[student_id]
+    return {"message": "record deleted"}
+  return {"message": "id does not exist"}
+    
