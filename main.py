@@ -4,10 +4,15 @@ from fastapi import FastAPI, Path
 app = FastAPI()
 
 students = {
-  1: {
+  1: { 
     "name": "Mark",
-    "age": "25",
+    "age": 25,
     "class": "final year"
+  },
+  2: {
+     "name":"Nanmen",
+     "age": 20,
+     "class": "300 level"
   }
 }
 
@@ -17,15 +22,21 @@ def index():
 
 
 @app.get("/get-student/{student_id}")
-def get_student(student_id: int = Path(description= "The ID of the student you want to view")):
-  for student in students:
-    if student["id"] == student_id:
-      return student
-  raise HTTPException(status_code=404, detail="Student not found")
+def get_student(student_id: int = Path(description= "The ID of the student you want to view",gt = 0, le = 10)):
+
+    return students[student_id]
+     
+    return {"The student data does not exist"}
+  # raise HTTPException(status_code=404, detail="Student not found")
 
 
 
 
+# @app.get("/get")
+
+
+
+ 
 
 
 
