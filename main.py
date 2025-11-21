@@ -13,14 +13,14 @@ class Student(BaseModel):
   age: int
   year: str
   department: str
-  CGP: float
+  cgpa: float
 
 class Update(BaseModel):
   name: Optional[str] = None
   age: Optional[int] = None
   year: Optional[str] = None
   department: Optional[str] = None
-  CGP: Optional[float] = None
+  cgpa: Optional[float] = None
 
 
 @app.get("/get-student{student_id}")
@@ -45,19 +45,19 @@ def update_student(student_id: int, student: Update):
   if student_id  in students:
 
     if student.name != None:
-      students[student_id].name == student.name
+      students[student_id].name = student.name
 
     if student.age != None:
-      students[student_id].age == student.age
+      students[student_id].age = student.age
 
     if student.year != None:
-      students[student_id].year == student.year
+      students[student_id].year = student.year
 
     if student.department != None:
-      students[student_id].department == student.department
+      students[student_id].department = student.department
 
-    if student.CGP != None:
-      students[student_id].CPG == student.CGP
+    if student.cgpa != None:
+      students[student_id].cgpa = student.cgpa
     return students[student_id]
   
   return {"message": "id does not exist"}
