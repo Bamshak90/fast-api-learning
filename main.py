@@ -31,7 +31,7 @@ def get_student(student_id: int = Path(description="This is to get the student r
   return {"message": "Error, student id does not exist"}
 
 
-@app.post("/create-student{student_id}")
+@app.post("/create-student/{student_id}")
 
 def create_student(student_id: int, student: Student):
   if student_id in students:
@@ -39,7 +39,7 @@ def create_student(student_id: int, student: Student):
   students[student_id] = student
   return students[student_id]
 
-@app.put("/update-student{student_id}")
+@app.put("/update-student/{student_id}")
 
 def update_student(student_id: int, student: Update):
   if student_id  in students:
@@ -63,7 +63,7 @@ def update_student(student_id: int, student: Update):
   return {"message": "id does not exist"}
 
 
-@app.delete("/delete-student{student_id}")
+@app.delete("/delete-student/{student_id}")
 def delete_student(student_id: int):
   if student_id in students:
     del students[student_id]
